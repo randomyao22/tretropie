@@ -30,20 +30,20 @@ install)
 	rom_url="https://archive.org/download/MAME2003_Reference_Set_MAME0.78_ROMs_CHDs_Samples/roms/"
 	rom="$rom_name.zip"
 	rom_dir="$HOME/mameroms/"
-	echo -e "\033[0;32mDownloading rom $rom...\033[0;35m"
+	echo -e "$color_mainDownloading rom $rom...$color_second"
 	wget -P $rom_dir $rom_url$rom
-	echo -e "\033[0;32mStart uploading to RetroPie...\033[0;35m"
+	echo -e "$color_mainStart uploading to RetroPie...$color_second"
 	scp $rom_dir$rom pi:$mame_path_default
 	rm $rom_dir$rom
-	echo -e "\033[0;32mRom uploaded. Enjoy!\033[0m"
+	echo -e "$color_mainRom uploaded. Enjoy!$color_none"
 	;;
 
-info)
+status)
 	ssh pi /bin/bash << EOF
-	echo -e "\033[0;32mSpace Usage:\033[0m"
+	echo -e "$color_mainSpace Usage:$color_none"
 	df -h .
 	echo -e "-------------------------------"
-	echo -e "\033[0;32mRoms:\033[0m"
+	echo -e "$color_mainRoms:$color_none"
 	ls $mame_path_default
 EOF
 	;;
@@ -77,7 +77,7 @@ usage: tretropie [--version] <command> [<args>]
 
 Command
 install		Download rom into my RetroPie rom directory(MAME2003 only for now).
-info		Check RetroPie info such as disk space and roms.
+status		Check RetroPie status such as disk space and roms.
 
 EOF
 	;;
