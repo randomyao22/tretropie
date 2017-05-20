@@ -1,0 +1,84 @@
+#!/bin/bash
+# version
+version=0.10
+
+# Paths
+mame_path_default="/home/pi/RetroPie/roms/mame-libretro/"
+
+# color
+color_main="\033[0;32m"
+color_second="\033[0;35m"
+color_none="\033[0m"
+
+# Get the argument
+arg1=$1
+
+case "$arg1" in
+
+-v|--version)
+	echo "tretropie $version"
+	;;
+
+install) 	
+	if [ -z "$2" ]
+		then
+			echo ERROR: No rom name suppiled 1>&2
+			exit 1
+	fi
+
+	rom_name=$2
+	rom_url="https://archive.org/download/MAME2003_Reference_Set_MAME0.78_ROMs_CHDs_Samples/roms/"
+	rom="$rom_name.zip"
+	rom_dir="$HOME/mameroms/"
+	echo -e "$color_mainDownloading rom $rom...$color_second"
+	wget -P $rom_dir $rom_url$rom
+	echo -e "$color_mainStart uploading to RetroPie...$color_second"
+	scp $rom_dir$rom pi:$mame_path_default
+	rm $rom_dir$rom
+	echo -e "$color_mainRom uploaded. Enjoy!$color_none"
+	;;
+
+status)
+	ssh pi /bin/bash << EOF
+	echo -e "$color_mainSpace Usage:$color_none"
+	df -h .
+	echo -e "-------------------------------"
+	echo -e "$color_mainRoms:$color_none"
+	ls $mame_path_default
+EOF
+	;;
+
+*)
+	echo -e $color_main
+	cat << "EOF"
+
+     ╔╦╗┬┌┬┐┌─┐  ╦═╗┌─┐┌┬┐┬─┐┌─┐╔═╗┬┌─┐  
+      ║ ││││└─┐  ╠╦╝├┤  │ ├┬┘│ │╠═╝│├┤   
+      ╩ ┴┴ ┴└─┘  ╩╚═└─┘ ┴ ┴└─└─┘╩  ┴└─┘
+
+================================================.
+     .-.   .-.     .--.                         |
+    | OO| | OO|   / _.-' .-.   .-.  .-.   .''.  |
+    |   | |   |   \  '-. '-'   '-'  '-'   '..'  |
+    '^^^' '^^^'    '--'                         |
+===============.  .-.  .================.  .-.  |
+               | |   | |                |  '-'  |
+               | |   | |                |       |
+               | ':-:' |                |  .-.  |
+               |  '-'  |                |  '-'  |
+==============='       '================'       |
+EOF
+
+	echo -e $color_none
+	cat << "EOF"
+Welcome to use Tim's RetroPie.
+
+usage: tretropie [--version] <command> [<args>]
+
+Command
+install		Download rom into my RetroPie rom directory(MAME2003 only for now).
+status		Check RetroPie status such as disk space and roms.
+
+EOF
+	;;
+esac
